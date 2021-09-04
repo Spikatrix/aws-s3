@@ -17,6 +17,8 @@ export function  fetchWithProgress (url: string, opts: RequestInit, onProgress?:
 
     return new Promise( (res, rej)=>{
       let xhr = new XMLHttpRequest();
+      if (xhr.upload && onProgress)
+        xhr.upload.onprogress = onProgress; // event.loaded / event.total * 100 ; //event.lengthComputable
       xhr.open(opts.method || 'get', url, true);
       xhr.onreadystatechange = function(){
         if( this.readyState === 4) {
@@ -44,8 +46,6 @@ export function  fetchWithProgress (url: string, opts: RequestInit, onProgress?:
         res(this.response);
       };
       xhr.onerror = e => rej;
-      if (xhr.upload && onProgress)
-        xhr.upload.onprogress = onProgress; // event.loaded / event.total * 100 ; //event.lengthComputable
       xhr.send(opts.body);
     });
   }else{
